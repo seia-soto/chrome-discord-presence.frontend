@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "snowpack dev",
-    "build": "snowpack build"
+    "build": "snowpack build --clean"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.0.4",
