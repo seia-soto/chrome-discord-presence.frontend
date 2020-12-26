@@ -1,8 +1,10 @@
-# New Project
+# Chrome Discord Presence (FrontEnd)
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
 
 ## Available Scripts
+
+> **I am using Yarnpkg to manage this project.**
 
 ### npm start
 
