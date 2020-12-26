@@ -13,8 +13,6 @@ import {
 
 import AltHeading from './components/AltHeading'
 
-const browser = chrome
-
 const App = props => {
   const { useEffect, useState } = React
   const toast = useToast()
@@ -34,7 +32,7 @@ const App = props => {
       return
     }
 
-    const messagePort = browser.extension.connect({ name: 'background.js' })
+    const messagePort = window.chrome.extension.connect({ name: 'background.js' })
 
     if (!messagePort) {
       toast('The bridge between the background resource is not prepared. Try re-openning the popup.')
