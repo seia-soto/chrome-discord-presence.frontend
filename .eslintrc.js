@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     commonjs: true,
     es6: true,
-    node: true
+    webextensions: true
   },
   extends: [
     'standard',
@@ -12,7 +12,8 @@ module.exports = {
   ],
   globals: {
     Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
+    SharedArrayBuffer: 'readonly',
+    chrome: true
   },
   parser: 'babel-eslint',
   parserOptions: {
