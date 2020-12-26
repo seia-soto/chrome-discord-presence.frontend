@@ -8,15 +8,13 @@ import {
   Heading,
   Text,
   Link,
-  useToast,
-  useColorMode
+  useToast
 } from '@chakra-ui/react'
 
 import AltHeading from './components/AltHeading'
 
 const App = props => {
   const { useEffect, useState } = React
-  const { colorMode, toggleColorMode } = useColorMode()
   const toast = useToast()
   const [ping, setPing] = useState({})
   const [port, setPort] = useState()
@@ -24,11 +22,7 @@ const App = props => {
   const [isCheckboxActive, setCheckboxActive] = useState(false)
 
   useEffect(() => {
-    if (colorMode === 'light') {
-      // NOTE: dark mode magic;
-      toggleColorMode()
-    }
-    if (new URL(window.location.href).port !== 8080) {
+    if (new URL(window.location.href).port === 8080) {
       setPing({
         tab: 'Developer mode',
         ping: -1,
@@ -95,7 +89,7 @@ const App = props => {
   }, []) // NOTE: run only once;
 
   return (
-    <UIProvider>
+    <UIProvider initialColorMode='dark'>
       <Container
         style={{
           padding: '16px 0'
