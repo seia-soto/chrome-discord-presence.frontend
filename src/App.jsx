@@ -13,6 +13,8 @@ import {
 
 import AltHeading from './components/AltHeading'
 
+const browser = chrome
+
 const App = props => {
   const { useEffect, useState } = React
   const toast = useToast()
@@ -22,7 +24,7 @@ const App = props => {
   const [isCheckboxActive, setCheckboxActive] = useState(false)
 
   useEffect(() => {
-    if (new URL(window.location.href).port === 8080) {
+    if (!chrome.extension) {
       setPing({
         tab: 'Developer mode',
         ping: -1,
@@ -32,7 +34,7 @@ const App = props => {
       return
     }
 
-    const messagePort = chrome.extension.connect({ name: 'background.js' })
+    const messagePort = browser.extension.connect({ name: 'background.js' })
 
     if (!messagePort) {
       toast('The bridge between the background resource is not prepared. Try re-openning the popup.')
