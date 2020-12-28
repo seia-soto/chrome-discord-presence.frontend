@@ -8,18 +8,27 @@ import {
   Heading,
   Text,
   Link,
-  useToast
+  extendTheme
 } from '@chakra-ui/react'
 
 import AltHeading from './components/AltHeading'
 
+import './styles/fontOverrides.css'
+
 const App = props => {
   const { useEffect, useState } = React
-  const toast = useToast()
   const [ping, setPing] = useState({})
   const [port, setPort] = useState()
   const [isActive, setActive] = useState(false)
   const [isCheckboxActive, setCheckboxActive] = useState(false)
+
+  const theme = extendTheme({
+    fonts: {
+      body: 'Inter',
+      heading: 'Inter',
+      mono: 'Inter'
+    }
+  })
 
   useEffect(() => {
     if (!chrome.extension) {
@@ -35,34 +44,46 @@ const App = props => {
     const messagePort = window.chrome.extension.connect({ name: 'background.js' })
 
     if (!messagePort) {
-      toast('The bridge between the background resource is not prepared. Try re-openning the popup.')
+      alert('The bridge between the background resource is not prepared. Try re-openning the popup.')
 
       return
     }
 
     setPort(messagePort)
 
-    port.onMessage.addListener(message => {
+    messagePort.onMessage.addListener(message => {
       switch (message) {
         case 'invalid-token': {
           setActive(false)
           setCheckboxActive(true)
 
-          toast('Your Discord token seems like invalid, please try again.')
+          alert('Your Discord token seems like invalid, please try again.')
+
+          break
+        }
+        case 'client-connecting': {
+          setActive(true)
+          setCheckboxActive(false)
 
           break
         }
         case 'client-connected': {
+          setActive(true)
           setCheckboxActive(true)
 
-          toast('Discord client connected to the gateway.')
+          messagePort.postMessage('get-statics')
 
           break
         }
         case 'client-deprecated': {
+          setActive(false)
           setCheckboxActive(true)
 
-          toast('Your Discord client is now disconnected.')
+          break
+        }
+        case 'first-run': {
+          setActive(false)
+          setCheckboxActive(true)
 
           break
         }
@@ -85,29 +106,29 @@ const App = props => {
     })
 
     // NOTE: post-process status;
-    port.postMessage('get-status')
+    messagePort.postMessage('get-status')
   }, []) // NOTE: run only once;
 
   return (
-    <UIProvider initialColorMode='dark'>
+    <UIProvider theme={theme} initialColorMode='dark'>
       <Container
         style={{
-          padding: '16px 0'
+          padding: '16px'
         }}
       >
         <Heading size='lg'>Chrome Rich-Presence</Heading>
-        <Box style={{ padding: '12px 0' }}>
+        <Box style={{ paddingTop: '12px' }}>
           <AltHeading>Settings</AltHeading>
           <Checkbox
             isChecked={isActive}
-            isDisabled={isCheckboxActive}
+            isDisabled={!isCheckboxActive}
             onChange={event => {
               const { checked } = event.target
 
               setActive(checked)
 
               if (!port) return
-              if (isActive) {
+              if (checked) {
                 setCheckboxActive(false)
                 port.postMessage('enable-rich-presence')
               } else {
@@ -121,15 +142,14 @@ const App = props => {
         </Box>
         {
           ping.account && (
-            <Box style={{ padding: '12px 0' }}>
+            <Box style={{ paddingTop: '12px' }}>
               <AltHeading>Inspect</AltHeading>
               <Text><b>Tab name</b> {ping.tab}</Text>
-              <Text><b>Client ping</b> {ping.ping}ms</Text>
               <Text><b>Client account</b> {ping.account}</Text>
             </Box>
           )
         }
-        <Box style={{ padding: '12px 0' }}>
+        <Box style={{ paddingTop: '12px' }}>
           <AltHeading>Credit</AltHeading>
           <Text>
             Copyright {new Date().getFullYear() || 2020}{' '}

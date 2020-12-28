@@ -7,7 +7,7 @@ import {
 
 const AltHeading = props => {
   return (
-    <Heading size='md' style={{ padding: '8px 0' }}>
+    <Heading size='md' style={{ paddingTop: '8px' }}>
       {props.children}
     </Heading>
   )
